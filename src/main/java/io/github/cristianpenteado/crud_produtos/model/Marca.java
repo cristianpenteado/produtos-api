@@ -1,0 +1,66 @@
+package io.github.cristianpenteado.crud_produtos.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+import java.util.UUID;
+
+@Entity
+@Table(name = "marca")
+public class Marca {
+
+    @Id
+    @Column
+    private UUID id;
+
+    @Column
+    private String name;
+
+    @Column
+    private String descricao;
+
+    public Marca(){
+        this.id = UUID.randomUUID();
+    }
+
+    public Marca(String name, String descricao) {
+        this();
+        this.name = name;
+        this.descricao = descricao;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    @Override
+    public String toString() {
+        return "Marca{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", descricao='" + descricao + '\'' +
+                '}';
+    }
+}
