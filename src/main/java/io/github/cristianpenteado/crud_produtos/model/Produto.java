@@ -1,6 +1,8 @@
 package io.github.cristianpenteado.crud_produtos.model;
 
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -8,6 +10,7 @@ import java.util.UUID;
 public class Produto {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
     private UUID id;
 
@@ -16,17 +19,16 @@ public class Produto {
     @Column
     private String descricao;
     @Column
-    private Double preco;
+    private BigDecimal preco;
 
     @ManyToOne
     @JoinColumn(name = "marca_id", nullable = false)
     private Marca marca;
 
     public Produto(){
-        this.id = UUID.randomUUID();
     }
 
-    public Produto(String nome, String descricao, Double preco, Marca marca) {
+    public Produto(String nome, String descricao, BigDecimal preco, Marca marca) {
         this();
         this.nome = nome;
         this.descricao = descricao;
@@ -46,7 +48,7 @@ public class Produto {
         return this.descricao;
     }
 
-    public Double getPreco(){
+    public BigDecimal getPreco(){
         return this.preco;
     }
 
@@ -66,7 +68,7 @@ public class Produto {
         this.nome = nome;
     }
 
-    public void setPreco(Double preco) {
+    public void setPreco(BigDecimal preco) {
         this.preco = preco;
     }
 
