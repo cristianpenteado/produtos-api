@@ -2,9 +2,12 @@ package io.github.cristianpenteado.crud_produtos.controller;
 
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.service.MarcaService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/marcas")
@@ -23,6 +26,16 @@ public class MarcaController {
     @GetMapping
     public List<Marca> listar(){
         return marcaService.listarTodasMarcas();
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<Marca> atualizarMarca(@PathVariable UUID id, @RequestBody Marca marca){
+        Optional<Marca> marcaAtualizadaOpcional = marcaService.atualizarMarca(id, marca);
+        if(marcaAtualizadaOpcional.isPresent()){
+            Marca marcaRetornada = marcaAtualizadaOpcional.get();
+            return ResponseEntity.ok(marcaRetornada);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
