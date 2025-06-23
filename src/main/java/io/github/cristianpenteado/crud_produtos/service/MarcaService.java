@@ -48,4 +48,8 @@ public class MarcaService {
             return Optional.empty();
         }
     }
+
+    public void deletarMarca(UUID id){
+        marcaRepository.deleteById(id);
+    }
 }

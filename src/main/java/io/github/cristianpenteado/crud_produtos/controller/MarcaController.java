@@ -38,4 +38,10 @@ public class MarcaController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarMarca(@PathVariable UUID id){
+        marcaService.deletarMarca(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
