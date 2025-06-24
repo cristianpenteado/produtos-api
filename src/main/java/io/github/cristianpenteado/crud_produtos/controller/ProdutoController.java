@@ -50,4 +50,10 @@ public class ProdutoController {
             return ResponseEntity.notFound().build();
         }
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Produto> deletarProduto(@PathVariable UUID id){
+        produtoService.deletarProduto(id);
+        return ResponseEntity.noContent().build();
+    }
+
 }

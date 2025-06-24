@@ -67,4 +67,8 @@ public class ProdutoService {
             return Optional.empty();
         }
     }
+
+    public void deletarProduto(UUID id){
+        produtoRepository.deleteById(id);
+    }
 }
