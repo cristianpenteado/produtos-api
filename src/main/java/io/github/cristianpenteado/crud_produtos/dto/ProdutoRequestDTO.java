@@ -3,7 +3,7 @@ package io.github.cristianpenteado.crud_produtos.dto;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-public class ProdutoCreateDTO {
+public class ProdutoRequestDTO {
     private String nome;
     private String descricao;
     private BigDecimal preco;

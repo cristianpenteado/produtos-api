@@ -1,12 +1,15 @@
 package io.github.cristianpenteado.crud_produtos.service;
 
-import io.github.cristianpenteado.crud_produtos.dto.ProdutoCreateDTO;
+import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
 import io.github.cristianpenteado.crud_produtos.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ProdutoService {
@@ -18,7 +21,7 @@ public class ProdutoService {
         this.marcaService = marcaService;
     }
 
-    public Produto criarProduto(ProdutoCreateDTO produtodto){
+    public Produto criarProduto(ProdutoRequestDTO produtodto){
 
         if(produtodto.getMarcaId() == null){
             throw new IllegalArgumentException("O Id da Marca é obrigatório");
@@ -36,5 +39,32 @@ public class ProdutoService {
 
     public List<Produto> listarProdutos(){
         return this.produtoRepository.findAll();
+    }
+
+    public Optional<Produto> atualizarProduto(UUID id, ProdutoRequestDTO produtodto){
+
+        Optional<Produto> produtoExistenteOptional = produtoRepository.findById(id);
+        if (produtoExistenteOptional.isPresent()){
+            Produto produtoExistente = produtoExistenteOptional.get();
+
+            if(produtodto.getNome() != null && !produtodto.getNome().trim().isEmpty()){
+                produtoExistente.setNome(produtodto.getNome());
+            }
+            if(produtodto.getDescricao() != null && !produtodto.getDescricao().trim().isEmpty()){
+                produtoExistente.setDescricao(produtodto.getDescricao());
+            }
+            if(produtodto.getPreco() != null && produtodto.getPreco().compareTo(BigDecimal.ZERO)>= 0){
+                produtoExistente.setPreco(produtodto.getPreco());
+            }
+            if (produtodto.getMarcaId() != null){
+                Marca marcaNova = marcaService.buscarMarcaPorId(produtodto.getMarcaId())
+                        .orElseThrow(()->new RuntimeException("Nova marca não encontrada com o ID: "+ produtodto.getMarcaId()));
+                produtoExistente.setMarca(marcaNova);
+            }
+            return Optional.of(produtoRepository.save(produtoExistente));
+
+        } else {
+            return Optional.empty();
+        }
     }
 }
