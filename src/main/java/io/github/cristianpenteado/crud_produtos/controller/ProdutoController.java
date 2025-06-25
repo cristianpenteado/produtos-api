@@ -3,6 +3,7 @@ package io.github.cristianpenteado.crud_produtos.controller;
 import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
 import io.github.cristianpenteado.crud_produtos.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class ProdutoController {
     }
 
     @PostMapping()
-    public ResponseEntity<Produto> criarProduto(@RequestBody ProdutoRequestDTO produtodto){
+    public ResponseEntity<Produto> criarProduto(@RequestBody @Valid ProdutoRequestDTO produtodto){
 
         try {
             Produto novoProduto = this.produtoService.criarProduto(produtodto);
@@ -39,7 +40,7 @@ public class ProdutoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizarProduto(@PathVariable UUID id, @RequestBody ProdutoRequestDTO produtodto){
+    public ResponseEntity<Produto> atualizarProduto(@PathVariable UUID id, @RequestBody @Valid ProdutoRequestDTO produtodto){
         try {
             return produtoService.atualizarProduto(id, produtodto)
                     .map(produto -> ResponseEntity.ok(produto))

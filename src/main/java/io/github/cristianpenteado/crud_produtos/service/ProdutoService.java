@@ -23,9 +23,6 @@ public class ProdutoService {
 
     public Produto criarProduto(ProdutoRequestDTO produtodto){
 
-        if(produtodto.getMarcaId() == null){
-            throw new IllegalArgumentException("O Id da Marca é obrigatório");
-        }
         Marca marca = marcaService.buscarMarcaPorId(produtodto.getMarcaId())
                 .orElseThrow(()-> new RuntimeException("Msrca não encontrada com o Id: " + produtodto.getMarcaId()));
 
