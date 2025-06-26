@@ -4,6 +4,8 @@ import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
 import io.github.cristianpenteado.crud_produtos.repository.ProdutoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,8 +36,8 @@ public class ProdutoService {
         return this.produtoRepository.save(produto);
     }
 
-    public List<Produto> listarProdutos(){
-        return this.produtoRepository.findAll();
+    public Page<Produto> listarProdutos(Pageable pageable){
+        return this.produtoRepository.findAll(pageable);
     }
 
     public Optional<Produto> atualizarProduto(UUID id, ProdutoRequestDTO produtodto){

@@ -4,6 +4,8 @@ import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
 import io.github.cristianpenteado.crud_produtos.service.ProdutoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +36,9 @@ public class ProdutoController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Produto>> listarProdutos(){
-        List<Produto> produtos = this.produtoService.listarProdutos();
-        return ResponseEntity.ok(produtos);
+    public ResponseEntity<Page<Produto>> listarProdutos(Pageable pageable){
+        Page<Produto> produtosPage = this.produtoService.listarProdutos(pageable);
+        return ResponseEntity.ok(produtosPage);
     }
 
     @PutMapping("/{id}")
