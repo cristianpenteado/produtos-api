@@ -1,10 +1,11 @@
 package io.github.cristianpenteado.crud_produtos.service;
 
+import io.github.cristianpenteado.crud_produtos.dto.MarcaRequestDTO;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.repository.MarcaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,30 +18,33 @@ public class MarcaService {
         this.marcaRepository = marcaRepository;
     }
 
-    public Marca criarMarca(Marca marca){
+    public Marca criarMarca(MarcaRequestDTO marcadto){
+        Marca marca = new Marca();
+        marca.setName(marcadto.getNome());
+        marca.setDescricao(marcadto.getDescricao());
         return marcaRepository.save(marca);
     }
 
-    public List<Marca> listarTodasMarcas(){
-        return marcaRepository.findAll();
+    public Page<Marca> listarTodasMarcas(Pageable pageable){
+        return marcaRepository.findAll(pageable);
     }
 
     public  Optional<Marca> buscarMarcaPorId(UUID id){
         return marcaRepository.findById(id);
     }
 
-    public Optional<Marca> atualizarMarca(UUID id, Marca marcaAtualizada){
+    public Optional<Marca> atualizarMarca(UUID id, MarcaRequestDTO marcadto){
         Optional<Marca> marcaExistenteOpcional = marcaRepository.findById(id);
         if (marcaExistenteOpcional.isPresent()){
             Marca marcaExistente = marcaExistenteOpcional.get();
 
-            if(marcaAtualizada.getName() != null && !marcaAtualizada.getName().trim().isEmpty()){
-                marcaExistente.setName(marcaAtualizada.getName());
+            if(marcadto.getNome() != null && !marcadto.getNome().trim().isEmpty()){
+                marcaExistente.setName(marcadto.getNome());
             }
-            if(marcaAtualizada.getDescricao() != null && !marcaAtualizada.getDescricao().trim().isEmpty()){
-                marcaExistente.setDescricao(marcaAtualizada.getDescricao());
+            if(marcadto.getDescricao() != null && !marcadto.getDescricao().trim().isEmpty()){
+                marcaExistente.setDescricao(marcadto.getDescricao());
             }
-            Marca marcaSalva = marcaRepository.save(marcaAtualizada);
+            Marca marcaSalva = marcaRepository.save(marcaExistente);
 
             return Optional.of(marcaSalva);
 

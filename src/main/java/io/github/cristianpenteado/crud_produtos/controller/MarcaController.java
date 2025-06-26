@@ -1,11 +1,15 @@
 package io.github.cristianpenteado.crud_produtos.controller;
 
+import io.github.cristianpenteado.crud_produtos.dto.MarcaRequestDTO;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.service.MarcaService;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,16 +24,20 @@ public class MarcaController {
     }
 
     @PostMapping
-    public Marca criar(@RequestBody Marca marca){
-        return marcaService.criarMarca(marca);
+    public ResponseEntity<Marca> criar(@RequestBody @Valid MarcaRequestDTO marcadto){
+       Marca marca = marcaService.criarMarca(marcadto);
+       return ResponseEntity.status(HttpStatus.CREATED).body(marca);
     }
+
     @GetMapping
-    public List<Marca> listar(){
-        return marcaService.listarTodasMarcas();
+    public ResponseEntity<Page<Marca>> listar(Pageable pageable){
+        Page<Marca> marcaPage = marcaService.listarTodasMarcas(pageable);
+        return ResponseEntity.ok(marcaPage);
     }
+
     @PutMapping("/{id}")
-    public ResponseEntity<Marca> atualizarMarca(@PathVariable UUID id, @RequestBody Marca marca){
-        Optional<Marca> marcaAtualizadaOpcional = marcaService.atualizarMarca(id, marca);
+    public ResponseEntity<Marca> atualizarMarca(@PathVariable UUID id, @RequestBody @Valid MarcaRequestDTO marcadto){
+        Optional<Marca> marcaAtualizadaOpcional = marcaService.atualizarMarca(id, marcadto);
         if(marcaAtualizadaOpcional.isPresent()){
             Marca marcaRetornada = marcaAtualizadaOpcional.get();
             return ResponseEntity.ok(marcaRetornada);
