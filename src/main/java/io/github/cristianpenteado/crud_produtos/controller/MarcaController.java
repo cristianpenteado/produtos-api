@@ -36,14 +36,8 @@ public class MarcaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Marca> atualizarMarca(@PathVariable UUID id, @RequestBody @Valid MarcaRequestDTO marcadto){
-        Optional<Marca> marcaAtualizadaOpcional = marcaService.atualizarMarca(id, marcadto);
-        if(marcaAtualizadaOpcional.isPresent()){
-            Marca marcaRetornada = marcaAtualizadaOpcional.get();
-            return ResponseEntity.ok(marcaRetornada);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    public Marca atualizarMarca(@PathVariable UUID id, @RequestBody @Valid MarcaRequestDTO marcadto){
+        return marcaService.atualizarMarca(id, marcadto);
     }
 
     @DeleteMapping("/{id}")

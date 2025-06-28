@@ -1,6 +1,7 @@
 package io.github.cristianpenteado.crud_produtos.service;
 
 import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
+import io.github.cristianpenteado.crud_produtos.exception.ResourceNotFoundException;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
 import io.github.cristianpenteado.crud_produtos.repository.ProdutoRepository;
@@ -24,8 +25,7 @@ public class ProdutoService {
 
     public Produto criarProduto(ProdutoRequestDTO produtodto){
 
-        Marca marca = marcaService.buscarMarcaPorId(produtodto.getMarcaId())
-                .orElseThrow(()-> new RuntimeException("Msrca não encontrada com o Id: " + produtodto.getMarcaId()));
+        Marca marca = marcaService.buscarMarcaPorId(produtodto.getMarcaId());
 
         Produto produto = new Produto();
         produto.setNome(produtodto.getNome());
@@ -55,8 +55,7 @@ public class ProdutoService {
                 produtoExistente.setPreco(produtodto.getPreco());
             }
             if (produtodto.getMarcaId() != null){
-                Marca marcaNova = marcaService.buscarMarcaPorId(produtodto.getMarcaId())
-                        .orElseThrow(()->new RuntimeException("Nova marca não encontrada com o ID: "+ produtodto.getMarcaId()));
+                Marca marcaNova = marcaService.buscarMarcaPorId(produtodto.getMarcaId());
                 produtoExistente.setMarca(marcaNova);
             }
             return Optional.of(produtoRepository.save(produtoExistente));
