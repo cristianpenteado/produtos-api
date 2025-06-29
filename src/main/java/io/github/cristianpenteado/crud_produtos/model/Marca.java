@@ -1,9 +1,6 @@
 package io.github.cristianpenteado.crud_produtos.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -12,10 +9,11 @@ import java.util.UUID;
 public class Marca {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column
     private UUID id;
 
-    @Column
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column
