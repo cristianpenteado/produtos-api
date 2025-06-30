@@ -64,11 +64,11 @@ A URL base para todos os endpoints é `http://localhost:8080`.
 | `PUT`    | `/api/marcas/{id}`      | Atualiza uma marca existente pelo seu ID. |
 | `DELETE` | `/api/marcas/{id}`      | Deleta uma marca pelo seu ID.          |
 
-#### Exemplo de Body para POST /api/marcas
+#### Exemplo de Body para POST `/api/marcas`
 
 ```json
 {
-  "name": "Marca Famosa",
+  "nome": "Marca Famosa",
   "descricao": "Líder de mercado em eletrônicos."
 }
 ```
