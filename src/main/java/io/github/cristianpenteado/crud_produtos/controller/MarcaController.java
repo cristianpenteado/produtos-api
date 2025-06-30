@@ -1,6 +1,7 @@
 package io.github.cristianpenteado.crud_produtos.controller;
 
 import io.github.cristianpenteado.crud_produtos.dto.MarcaRequestDTO;
+import io.github.cristianpenteado.crud_produtos.dto.MarcaResponseDTO;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.service.MarcaService;
 import jakarta.validation.Valid;
@@ -24,20 +25,21 @@ public class MarcaController {
     }
 
     @PostMapping
-    public ResponseEntity<Marca> criar(@RequestBody @Valid MarcaRequestDTO marcadto){
-       Marca marca = marcaService.criarMarca(marcadto);
+    public ResponseEntity<MarcaResponseDTO> criar(@RequestBody @Valid MarcaRequestDTO marcadto){
+       MarcaResponseDTO marca = marcaService.criarMarca(marcadto);
        return ResponseEntity.status(HttpStatus.CREATED).body(marca);
     }
 
     @GetMapping
-    public ResponseEntity<Page<Marca>> listar(Pageable pageable){
-        Page<Marca> marcaPage = marcaService.listarTodasMarcas(pageable);
+    public ResponseEntity<Page<MarcaResponseDTO>> listar(Pageable pageable){
+        Page<MarcaResponseDTO> marcaPage = marcaService.listarTodasMarcas(pageable);
         return ResponseEntity.ok(marcaPage);
     }
 
     @PutMapping("/{id}")
-    public Marca atualizarMarca(@PathVariable UUID id, @RequestBody @Valid MarcaRequestDTO marcadto){
-        return marcaService.atualizarMarca(id, marcadto);
+    public ResponseEntity<MarcaResponseDTO> atualizarMarca(@PathVariable UUID id, @RequestBody @Valid MarcaRequestDTO marcadto){
+        MarcaResponseDTO marcaAtualizada = marcaService.atualizarMarca(id, marcadto);
+        return ResponseEntity.ok(marcaAtualizada);
     }
 
     @DeleteMapping("/{id}")

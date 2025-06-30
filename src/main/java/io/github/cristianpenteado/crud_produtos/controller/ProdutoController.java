@@ -1,6 +1,7 @@
 package io.github.cristianpenteado.crud_produtos.controller;
 
 import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
+import io.github.cristianpenteado.crud_produtos.dto.ProdutoResponseDTO;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
 import io.github.cristianpenteado.crud_produtos.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -23,38 +24,25 @@ public class ProdutoController {
     }
 
     @PostMapping()
-    public ResponseEntity<Produto> criarProduto(@RequestBody @Valid ProdutoRequestDTO produtodto){
+    public ResponseEntity<ProdutoResponseDTO> criarProduto(@RequestBody @Valid ProdutoRequestDTO produtodto){
+        ProdutoResponseDTO novoProduto = this.produtoService.criarProduto(produtodto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novoProduto);
 
-        try {
-            Produto novoProduto = this.produtoService.criarProduto(produtodto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novoProduto);
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(null);
-        } catch (RuntimeException e){
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @GetMapping()
-    public ResponseEntity<Page<Produto>> listarProdutos(Pageable pageable){
-        Page<Produto> produtosPage = this.produtoService.listarProdutos(pageable);
+    public ResponseEntity<Page<ProdutoResponseDTO>> listarProdutos(Pageable pageable){
+        Page<ProdutoResponseDTO> produtosPage = this.produtoService.listarProdutos(pageable);
         return ResponseEntity.ok(produtosPage);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizarProduto(@PathVariable UUID id, @RequestBody @Valid ProdutoRequestDTO produtodto){
-        try {
-            return produtoService.atualizarProduto(id, produtodto)
-                    .map(produto -> ResponseEntity.ok(produto))
-                    .orElseGet(()-> ResponseEntity.notFound().build());
-        } catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(null);
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ProdutoResponseDTO> atualizarProduto(@PathVariable UUID id, @RequestBody @Valid ProdutoRequestDTO produtodto){
+        ProdutoResponseDTO produtoResponseDTO = produtoService.atualizarProduto(id, produtodto);
+        return ResponseEntity.ok(produtoResponseDTO);
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<Produto> deletarProduto(@PathVariable UUID id){
+    public ResponseEntity<Void> deletarProduto(@PathVariable UUID id){
         produtoService.deletarProduto(id);
         return ResponseEntity.noContent().build();
     }

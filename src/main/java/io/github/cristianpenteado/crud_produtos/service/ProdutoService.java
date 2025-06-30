@@ -1,6 +1,7 @@
 package io.github.cristianpenteado.crud_produtos.service;
 
 import io.github.cristianpenteado.crud_produtos.dto.ProdutoRequestDTO;
+import io.github.cristianpenteado.crud_produtos.dto.ProdutoResponseDTO;
 import io.github.cristianpenteado.crud_produtos.exception.ResourceNotFoundException;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.model.Produto;
@@ -23,7 +24,7 @@ public class ProdutoService {
         this.marcaService = marcaService;
     }
 
-    public Produto criarProduto(ProdutoRequestDTO produtodto){
+    public ProdutoResponseDTO criarProduto(ProdutoRequestDTO produtodto){
 
         Marca marca = marcaService.buscarMarcaPorId(produtodto.getMarcaId());
 
@@ -32,18 +33,19 @@ public class ProdutoService {
         produto.setDescricao(produtodto.getDescricao());
         produto.setPreco(produtodto.getPreco());
         produto.setMarca(marca);
-        return this.produtoRepository.save(produto);
+        Produto produtoSalvo =  this.produtoRepository.save(produto);
+        return new ProdutoResponseDTO(produtoSalvo);
     }
 
-    public Page<Produto> listarProdutos(Pageable pageable){
-        return this.produtoRepository.findAll(pageable);
+    public Page<ProdutoResponseDTO> listarProdutos(Pageable pageable){
+        Page<Produto> produtoPage = this.produtoRepository.findAll(pageable);
+        return produtoPage.map(ProdutoResponseDTO::new);
     }
 
-    public Optional<Produto> atualizarProduto(UUID id, ProdutoRequestDTO produtodto){
+    public ProdutoResponseDTO atualizarProduto(UUID id, ProdutoRequestDTO produtodto){
 
-        Optional<Produto> produtoExistenteOptional = produtoRepository.findById(id);
-        if (produtoExistenteOptional.isPresent()){
-            Produto produtoExistente = produtoExistenteOptional.get();
+        Produto produtoExistente = produtoRepository.findById(id)
+                .orElseThrow(()-> new ResourceNotFoundException("Produto com ID "+id+" Não encontrado!"));
 
             if(produtodto.getNome() != null && !produtodto.getNome().trim().isEmpty()){
                 produtoExistente.setNome(produtodto.getNome());
@@ -58,14 +60,15 @@ public class ProdutoService {
                 Marca marcaNova = marcaService.buscarMarcaPorId(produtodto.getMarcaId());
                 produtoExistente.setMarca(marcaNova);
             }
-            return Optional.of(produtoRepository.save(produtoExistente));
-
-        } else {
-            return Optional.empty();
-        }
+           Produto produtoResponse = produtoRepository.save(produtoExistente);
+            return new ProdutoResponseDTO(produtoResponse);
     }
 
     public void deletarProduto(UUID id){
+        if (!produtoRepository.existsById(id)){
+            throw new ResourceNotFoundException("Produto com ID "+id+" não encontrado");
+        }
         produtoRepository.deleteById(id);
+
     }
 }

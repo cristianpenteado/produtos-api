@@ -1,6 +1,7 @@
 package io.github.cristianpenteado.crud_produtos.service;
 
 import io.github.cristianpenteado.crud_produtos.dto.MarcaRequestDTO;
+import io.github.cristianpenteado.crud_produtos.dto.MarcaResponseDTO;
 import io.github.cristianpenteado.crud_produtos.exception.ResourceNotFoundException;
 import io.github.cristianpenteado.crud_produtos.model.Marca;
 import io.github.cristianpenteado.crud_produtos.repository.MarcaRepository;
@@ -18,22 +19,26 @@ public class MarcaService {
         this.marcaRepository = marcaRepository;
     }
 
-    public Marca criarMarca(MarcaRequestDTO marcadto){
+    public MarcaResponseDTO criarMarca(MarcaRequestDTO marcadto){
         Marca marca = new Marca();
         marca.setName(marcadto.getNome());
         marca.setDescricao(marcadto.getDescricao());
-        return marcaRepository.save(marca);
+
+        Marca marcaSalva = marcaRepository.save(marca);
+
+        return new MarcaResponseDTO(marcaSalva);
     }
 
-    public Page<Marca> listarTodasMarcas(Pageable pageable){
-        return marcaRepository.findAll(pageable);
+    public Page<MarcaResponseDTO> listarTodasMarcas(Pageable pageable){
+        return marcaRepository.findAll(pageable)
+                .map(MarcaResponseDTO::new);
     }
 
     public  Marca buscarMarcaPorId(UUID id){
         return marcaRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Marca com ID "+id+" não encontrada!"));
     }
 
-    public Marca atualizarMarca(UUID id, MarcaRequestDTO marcadto){
+    public MarcaResponseDTO atualizarMarca(UUID id, MarcaRequestDTO marcadto){
 
         Marca marcaExistente = marcaRepository.findById(id)
                 .orElseThrow(()->new ResourceNotFoundException("Marca com ID "+ id +" não encontrada!"));;
@@ -44,10 +49,14 @@ public class MarcaService {
             if(marcadto.getDescricao() != null && !marcadto.getDescricao().trim().isEmpty()){
                 marcaExistente.setDescricao(marcadto.getDescricao());
             }
-            return marcaRepository.save(marcaExistente);
+            Marca marcaAtualizada =  marcaRepository.save(marcaExistente);
+            return new MarcaResponseDTO(marcaAtualizada);
     }
 
     public void deletarMarca(UUID id){
+        if (!marcaRepository.existsById(id)){
+            throw new ResourceNotFoundException("Marca com ID "+id+" não encontrada!");
+        }
         marcaRepository.deleteById(id);
     }
 }
